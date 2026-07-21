@@ -113,7 +113,7 @@ export interface SesionAdmin {
 })
 export class AdminService {
 
-  private url = 'https://chatbot-gamer-backend.onrender.com/chat';
+private url = 'https://chatbot-gamer-backend.onrender.com/admin';
 
   constructor(
     private http: HttpClient,
