@@ -1,0 +1,472 @@
+<div class="panel">
+
+  <aside class="menu">
+
+    <div class="marca">
+      <div class="logo">🎮</div>
+
+      <div>
+        <h2>GameBot</h2>
+        <p>Administración</p>
+      </div>
+    </div>
+
+    <nav>
+
+      <a routerLink="/admin">
+        Dashboard
+      </a>
+
+      <a routerLink="/admin/usuarios">
+        Usuarios
+      </a>
+
+      <a routerLink="/admin/preguntas">
+  Preguntas
+</a>
+
+      <a
+        routerLink="/admin/videojuegos"
+        class="activo"
+      >
+        Videojuegos
+      </a>
+
+      <a routerLink="/admin/historial">
+  Historial
+</a>
+
+      <a routerLink="/admin/sesiones">
+  Sesiones
+</a>
+
+    </nav>
+
+    <div class="administrador">
+      <strong>{{ usuarioActual?.nombre }}</strong>
+      <span>{{ usuarioActual?.correo }}</span>
+    </div>
+
+    <button
+      class="cerrar"
+      (click)="cerrarSesion()"
+    >
+      Cerrar sesión
+    </button>
+
+  </aside>
+
+  <main class="contenido">
+
+    <header class="encabezado">
+
+      <div>
+        <h1>Videojuegos</h1>
+        <p>
+          Administra el catálogo utilizado por GameBot.
+        </p>
+      </div>
+
+      <div class="acciones-encabezado">
+
+        <button
+          class="actualizar"
+          (click)="cargarVideojuegos()"
+          [disabled]="cargando"
+        >
+          Actualizar
+        </button>
+
+        <button
+          class="nuevo"
+          (click)="abrirFormularioNuevo()"
+        >
+          Agregar videojuego
+        </button>
+
+      </div>
+
+    </header>
+
+    <div
+      *ngIf="mensajeExito"
+      class="mensaje exito"
+    >
+      {{ mensajeExito }}
+    </div>
+
+    <div
+      *ngIf="mensajeError"
+      class="mensaje error"
+    >
+      {{ mensajeError }}
+    </div>
+
+    <section
+      *ngIf="mostrarFormulario"
+      class="formulario-contenedor"
+    >
+
+      <div class="titulo-formulario">
+
+        <div>
+          <h2>
+            {{
+              modoEdicion
+                ? 'Editar videojuego'
+                : 'Agregar videojuego'
+            }}
+          </h2>
+
+          <p>
+            Los campos marcados con * son obligatorios.
+          </p>
+        </div>
+
+        <button
+          class="cerrar-formulario"
+          type="button"
+          (click)="cancelarFormulario()"
+        >
+          ✕
+        </button>
+
+      </div>
+
+      <form
+        class="formulario"
+        (ngSubmit)="guardar()"
+      >
+
+        <div class="campo">
+          <label for="nombre">Nombre *</label>
+
+          <input
+            id="nombre"
+            type="text"
+            name="nombre"
+            [(ngModel)]="formulario.nombre"
+            placeholder="Ejemplo: Minecraft"
+          >
+        </div>
+
+        <div class="campo">
+          <label for="genero">Género *</label>
+
+          <input
+            id="genero"
+            type="text"
+            name="genero"
+            [(ngModel)]="formulario.genero"
+            placeholder="Ejemplo: Sandbox"
+          >
+        </div>
+
+        <div class="campo">
+          <label for="desarrollador">
+            Desarrollador *
+          </label>
+
+          <input
+            id="desarrollador"
+            type="text"
+            name="desarrollador"
+            [(ngModel)]="formulario.desarrollador"
+            placeholder="Ejemplo: Mojang Studios"
+          >
+        </div>
+
+        <div class="campo">
+          <label for="editor">Editor</label>
+
+          <input
+            id="editor"
+            type="text"
+            name="editor"
+            [(ngModel)]="formulario.editor"
+            placeholder="Ejemplo: Xbox Game Studios"
+          >
+        </div>
+
+        <div class="campo">
+          <label for="lanzamiento">
+            Año de lanzamiento *
+          </label>
+
+          <input
+            id="lanzamiento"
+            type="number"
+            name="lanzamiento"
+            [(ngModel)]="formulario.lanzamiento"
+            min="1950"
+            max="2100"
+            placeholder="2020"
+          >
+        </div>
+
+        <div class="campo">
+          <label for="motor">Motor gráfico</label>
+
+          <input
+            id="motor"
+            type="text"
+            name="motor"
+            [(ngModel)]="formulario.motor"
+            placeholder="Ejemplo: Unreal Engine 5"
+          >
+        </div>
+
+        <div class="campo campo-ancho">
+          <label for="plataformas">
+            Plataformas *
+          </label>
+
+          <input
+            id="plataformas"
+            type="text"
+            name="plataformas"
+            [(ngModel)]="formulario.plataformas"
+            placeholder="PC, PlayStation 5, Xbox Series"
+          >
+        </div>
+
+        <div class="campo">
+          <label for="modo">Modo de juego</label>
+
+          <input
+            id="modo"
+            type="text"
+            name="modo"
+            [(ngModel)]="formulario.modo"
+            placeholder="Un jugador, Multijugador"
+          >
+        </div>
+
+        <div class="campo">
+          <label for="clasificacion">
+            Clasificación
+          </label>
+
+          <input
+            id="clasificacion"
+            type="text"
+            name="clasificacion"
+            [(ngModel)]="formulario.clasificacion"
+            placeholder="E10+, T, M"
+          >
+        </div>
+
+        <div class="campo">
+          <label for="calificacion">
+            Calificación
+          </label>
+
+          <input
+            id="calificacion"
+            type="number"
+            name="calificacion"
+            [(ngModel)]="formulario.calificacion"
+            min="0"
+            max="10"
+            step="0.1"
+            placeholder="9.5"
+          >
+        </div>
+
+        <div class="campo">
+          <label for="imagen">
+            Nombre de la imagen
+          </label>
+
+          <input
+            id="imagen"
+            type="text"
+            name="imagen"
+            [(ngModel)]="formulario.imagen"
+            placeholder="minecraft.jpg"
+          >
+        </div>
+
+        <div class="campo campo-ancho">
+          <label for="descripcion">
+            Descripción *
+          </label>
+
+          <textarea
+            id="descripcion"
+            name="descripcion"
+            [(ngModel)]="formulario.descripcion"
+            rows="5"
+            placeholder="Escribe una descripción del videojuego"
+          ></textarea>
+        </div>
+
+        <div class="botones-formulario">
+
+          <button
+            type="button"
+            class="cancelar"
+            (click)="cancelarFormulario()"
+            [disabled]="guardando"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            class="guardar"
+            [disabled]="guardando"
+          >
+            {{
+              guardando
+                ? 'Guardando...'
+                : modoEdicion
+                  ? 'Guardar cambios'
+                  : 'Agregar videojuego'
+            }}
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+    <section class="barra-busqueda">
+
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="filtrarVideojuegos()"
+        placeholder="Buscar por nombre, género o desarrollador"
+      >
+
+      <span>
+        {{ videojuegosFiltrados.length }} videojuegos
+      </span>
+
+    </section>
+
+    <div
+      *ngIf="cargando"
+      class="estado-carga"
+    >
+      Cargando videojuegos...
+    </div>
+
+    <section
+      *ngIf="!cargando"
+      class="tabla-contenedor"
+    >
+
+      <div class="tabla-responsive">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Juego</th>
+              <th>Género</th>
+              <th>Desarrollador</th>
+              <th>Año</th>
+              <th>Calificación</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let videojuego of videojuegosFiltrados"
+            >
+
+              <td>
+
+                <div class="juego">
+
+                  <div class="portada">
+                    🎮
+                  </div>
+
+                  <div>
+                    <strong>
+                      {{ videojuego.nombre }}
+                    </strong>
+
+                    <small>
+                      {{ videojuego.plataformas }}
+                    </small>
+                  </div>
+
+                </div>
+
+              </td>
+
+              <td>
+                {{ videojuego.genero }}
+              </td>
+
+              <td>
+                {{ videojuego.desarrollador }}
+              </td>
+
+              <td>
+                {{ videojuego.lanzamiento }}
+              </td>
+
+              <td>
+                <span class="nota">
+                   {{
+                    videojuego.calificacion !== null
+                      ? videojuego.calificacion
+                      : 'Sin nota'
+                  }}
+                </span>
+              </td>
+
+              <td>
+
+                <div class="acciones-tabla">
+
+                  <button
+                    class="editar"
+                    (click)="editar(videojuego)"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    class="eliminar"
+                    (click)="eliminar(videojuego)"
+                  >
+                    Eliminar
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr
+              *ngIf="videojuegosFiltrados.length === 0"
+            >
+              <td
+                colspan="6"
+                class="sin-datos"
+              >
+                No se encontraron videojuegos.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

@@ -1,0 +1,222 @@
+<div class="panel">
+
+  <aside class="menu">
+
+    <div class="marca">
+      <div class="logo">🎮</div>
+
+      <div>
+        <h2>GameBot</h2>
+        <p>Administración</p>
+      </div>
+    </div>
+
+    <nav>
+
+      <a routerLink="/admin">
+        Dashboard
+      </a>
+
+      <a
+        routerLink="/admin/usuarios"
+        class="activo"
+      >
+        Usuarios
+      </a>
+
+      <a routerLink="/admin/preguntas">
+        Preguntas
+      </a>
+
+      <a routerLink="/admin/videojuegos">
+        Videojuegos
+      </a>
+
+      <a routerLink="/admin/historial">
+  Historial
+</a>
+
+      <a routerLink="/admin/sesiones">
+  Sesiones
+</a>
+
+    </nav>
+
+    <div class="administrador">
+      <strong>{{ usuarioActual?.nombre }}</strong>
+      <span>{{ usuarioActual?.correo }}</span>
+    </div>
+
+    <button
+      class="cerrar"
+      (click)="cerrarSesion()"
+    >
+      Cerrar sesión
+    </button>
+
+  </aside>
+
+  <main class="contenido">
+
+    <header class="encabezado">
+
+      <div>
+        <h1>Usuarios</h1>
+        <p>
+          Gestiona las cuentas registradas en GameBot.
+        </p>
+      </div>
+
+      <button
+        class="actualizar"
+        (click)="cargarUsuarios()"
+      >
+        Actualizar
+      </button>
+
+    </header>
+
+    <section class="buscador">
+
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="filtrarUsuarios()"
+        placeholder="Buscar por nombre, correo o rol"
+      >
+
+      <span>
+        {{ usuariosFiltrados.length }} usuarios
+      </span>
+
+    </section>
+
+    <div
+      *ngIf="mensajeExito"
+      class="mensaje exito"
+    >
+      {{ mensajeExito }}
+    </div>
+
+    <div
+      *ngIf="mensajeError"
+      class="mensaje error"
+    >
+      {{ mensajeError }}
+    </div>
+
+    <div
+      *ngIf="cargando"
+      class="estado"
+    >
+      Cargando usuarios...
+    </div>
+
+    <section
+      *ngIf="!cargando"
+      class="tabla-contenedor"
+    >
+
+      <div class="tabla-responsive">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let usuario of usuariosFiltrados"
+            >
+
+              <td>
+                <strong>{{ usuario.nombre }}</strong>
+
+                <small *ngIf="esUsuarioActual(usuario)">
+                  Tu cuenta
+                </small>
+              </td>
+
+              <td>{{ usuario.correo }}</td>
+
+              <td>
+                <span
+                  class="rol"
+                  [class.admin]="usuario.rol === 'ADMIN'"
+                >
+                  {{ usuario.rol }}
+                </span>
+              </td>
+
+              <td>
+                <span
+                  class="estado-usuario"
+                  [class.activo]="estaActivo(usuario)"
+                  [class.inactivo]="!estaActivo(usuario)"
+                >
+                  {{
+                    estaActivo(usuario)
+                      ? 'Activo'
+                      : 'Inactivo'
+                  }}
+                </span>
+              </td>
+
+              <td>
+                {{
+                  usuario.fecha_registro
+                    | date:'dd/MM/yyyy HH:mm'
+                }}
+              </td>
+
+              <td>
+
+                <button
+                  class="accion"
+                  [class.desactivar]="estaActivo(usuario)"
+                  [class.activar]="!estaActivo(usuario)"
+                  [disabled]="esUsuarioActual(usuario)"
+                  (click)="cambiarEstado(usuario)"
+                >
+                  {{
+                    estaActivo(usuario)
+                      ? 'Desactivar'
+                      : 'Activar'
+                  }}
+                </button>
+
+              </td>
+
+            </tr>
+
+            <tr
+              *ngIf="usuariosFiltrados.length === 0"
+            >
+              <td
+                colspan="6"
+                class="sin-datos"
+              >
+                No se encontraron usuarios.
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

@@ -1,0 +1,277 @@
+<div class="panel">
+
+  <aside class="menu">
+
+    <div class="marca">
+      <div class="logo">🎮</div>
+
+      <div>
+        <h2>GameBot</h2>
+        <p>Administración</p>
+      </div>
+    </div>
+
+    <nav>
+
+  <a
+    routerLink="/admin"
+    class="activo"
+  >
+    Dashboard
+  </a>
+
+  <a routerLink="/admin/usuarios">
+    Usuarios
+  </a>
+
+  <a routerLink="/admin/preguntas">
+  Preguntas
+</a>
+
+  <a routerLink="/admin/videojuegos">
+    Videojuegos
+  </a>
+
+  <a routerLink="/admin/historial">
+  Historial
+</a>
+
+  <a routerLink="/admin/sesiones">
+  Sesiones
+</a>
+
+</nav>
+    <div class="administrador">
+      <strong>{{ usuario?.nombre }}</strong>
+      <span>{{ usuario?.correo }}</span>
+    </div>
+
+    <button
+      class="cerrar"
+      (click)="cerrarSesion()"
+    >
+      Cerrar sesión
+    </button>
+
+  </aside>
+
+  <main class="contenido">
+
+    <header class="encabezado">
+
+      <div>
+        <h1>Dashboard</h1>
+
+        <p>
+          Bienvenido, {{ usuario?.nombre }}.
+          Aquí puedes revisar la actividad de GameBot.
+        </p>
+      </div>
+
+      <button
+        class="actualizar"
+        (click)="cargarDashboard()"
+        [disabled]="cargando"
+      >
+        Actualizar
+      </button>
+
+    </header>
+
+    <div
+      *ngIf="cargando"
+      class="estado"
+    >
+      Cargando información...
+    </div>
+
+    <div
+      *ngIf="mensajeError"
+      class="error"
+    >
+      {{ mensajeError }}
+    </div>
+
+    <ng-container *ngIf="!cargando && !mensajeError">
+
+      <section class="tarjetas">
+
+        <article class="tarjeta">
+          <div class="icono">👥</div>
+
+          <div>
+            <span>Usuarios</span>
+            <strong>
+              {{ dashboard.totales.usuarios }}
+            </strong>
+          </div>
+        </article>
+
+        <article class="tarjeta">
+          <div class="icono">🎮</div>
+
+          <div>
+            <span>Videojuegos</span>
+            <strong>
+              {{ dashboard.totales.videojuegos }}
+            </strong>
+          </div>
+        </article>
+
+        <article class="tarjeta">
+          <div class="icono">💬</div>
+
+          <div>
+            <span>Preguntas</span>
+            <strong>
+              {{ dashboard.totales.preguntas }}
+            </strong>
+          </div>
+        </article>
+
+        <article class="tarjeta">
+          <div class="icono">📜</div>
+
+          <div>
+            <span>Consultas</span>
+            <strong>
+              {{ dashboard.totales.historial }}
+            </strong>
+          </div>
+        </article>
+
+        <article class="tarjeta">
+          <div class="icono">🔑</div>
+
+          <div>
+            <span>Sesiones</span>
+            <strong>
+              {{ dashboard.totales.sesiones }}
+            </strong>
+          </div>
+        </article>
+
+      </section>
+
+      <section class="secciones">
+
+        <article class="tabla-contenedor">
+
+          <div class="titulo-tabla">
+            <div>
+              <h2>Últimos usuarios</h2>
+              <p>Usuarios registrados recientemente</p>
+            </div>
+          </div>
+
+          <div class="tabla-responsive">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Rol</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr
+                  *ngFor="let item of dashboard.ultimosUsuarios"
+                >
+                  <td>{{ item.nombre }}</td>
+                  <td>{{ item.correo }}</td>
+
+                  <td>
+                    <span
+                      class="rol"
+                      [class.admin]="item.rol === 'ADMIN'"
+                    >
+                      {{ item.rol }}
+                    </span>
+                  </td>
+
+                  <td>
+                    {{ item.fecha_registro | date:'dd/MM/yyyy HH:mm' }}
+                  </td>
+                </tr>
+
+                <tr
+                  *ngIf="dashboard.ultimosUsuarios.length === 0"
+                >
+                  <td colspan="4" class="sin-datos">
+                    No hay usuarios registrados.
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+        <article class="tabla-contenedor">
+
+          <div class="titulo-tabla">
+            <div>
+              <h2>Últimos accesos</h2>
+              <p>Inicios de sesión recientes</p>
+            </div>
+          </div>
+
+          <div class="tabla-responsive">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Usuario</th>
+                  <th>Correo</th>
+                  <th>Fecha</th>
+                  <th>IP</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr
+                  *ngFor="let sesion of dashboard.ultimasSesiones"
+                >
+                  <td>{{ sesion.nombre }}</td>
+                  <td>{{ sesion.correo }}</td>
+
+                  <td>
+                    {{ sesion.fecha_ingreso | date:'dd/MM/yyyy HH:mm' }}
+                  </td>
+
+                  <td>{{ sesion.direccion_ip }}</td>
+                </tr>
+
+                <tr
+                  *ngIf="dashboard.ultimasSesiones.length === 0"
+                >
+                  <td colspan="4" class="sin-datos">
+                    No hay inicios de sesión.
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </article>
+
+      </section>
+
+    </ng-container>
+
+  </main>
+
+</div>

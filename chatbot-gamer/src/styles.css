@@ -1,0 +1,14 @@
+html,
+body{
+
+    margin:0;
+    padding:0;
+
+    min-height:100%;
+
+    background:
+    radial-gradient(circle at top,#472c82 0%,transparent 35%),
+    radial-gradient(circle at bottom right,#005c4b 0%,transparent 30%),
+    linear-gradient(180deg,#080808,#111111,#090909);
+
+}

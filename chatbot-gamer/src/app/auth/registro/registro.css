@@ -1,0 +1,263 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0d0e13;
+}
+
+.registro-container{
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    radial-gradient(circle at top right,
+    rgba(0,200,83,.15),
+    transparent 30%),
+    #0d0e13;
+
+    padding:30px;
+}
+
+.registro-card{
+
+    width:100%;
+    max-width:460px;
+
+    background:#181a22;
+
+    border-radius:20px;
+
+    padding:40px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.45);
+
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.logo{
+
+    width:80px;
+    height:80px;
+
+    margin:auto;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        #00c853,
+        #00a844
+    );
+
+    font-size:36px;
+
+    margin-bottom:20px;
+}
+
+.registro-card h1{
+
+    color:white;
+
+    text-align:center;
+
+    margin-bottom:8px;
+
+    font-size:30px;
+}
+
+.subtitulo{
+
+    color:#9fa3ad;
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+    font-size:15px;
+}
+
+.campo{
+
+    margin-bottom:18px;
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.campo label{
+
+    color:white;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+
+    font-weight:bold;
+}
+
+.campo input{
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#11131a;
+
+    color:white;
+
+    font-size:15px;
+
+    border:1px solid #30333d;
+
+    transition:.25s;
+}
+
+.campo input:focus{
+
+    outline:none;
+
+    border-color:#00c853;
+
+    box-shadow:
+    0 0 8px rgba(0,200,83,.35);
+}
+
+.boton{
+
+    width:100%;
+
+    margin-top:10px;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:linear-gradient(
+        135deg,
+        #00c853,
+        #00a844
+    );
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.boton:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 10px 20px rgba(0,200,83,.25);
+}
+
+.boton:disabled{
+
+    opacity:.6;
+
+    cursor:not-allowed;
+
+    transform:none;
+}
+
+.error{
+
+    margin-bottom:18px;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:rgba(244,67,54,.15);
+
+    color:#ff8a80;
+
+    text-align:center;
+
+    font-size:14px;
+}
+
+.exito{
+
+    margin-bottom:18px;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:rgba(0,200,83,.15);
+
+    color:#69f0ae;
+
+    text-align:center;
+
+    font-size:14px;
+}
+
+.login-link{
+
+    margin-top:25px;
+
+    text-align:center;
+
+    color:#9fa3ad;
+
+    font-size:14px;
+}
+
+.login-link a{
+
+    color:#69f0ae;
+
+    text-decoration:none;
+
+    font-weight:bold;
+}
+
+.login-link a:hover{
+
+    text-decoration:underline;
+}
+
+@media(max-width:600px){
+
+    .registro-card{
+
+        padding:25px;
+    }
+
+    .registro-card h1{
+
+        font-size:25px;
+    }
+
+}

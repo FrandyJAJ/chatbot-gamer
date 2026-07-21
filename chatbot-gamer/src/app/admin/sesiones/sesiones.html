@@ -1,0 +1,364 @@
+<div class="panel">
+
+  <aside class="menu">
+
+    <div class="marca">
+
+      <div class="logo">
+        🎮
+      </div>
+
+      <div>
+        <h2>GameBot</h2>
+        <p>Administración</p>
+      </div>
+
+    </div>
+
+    <nav>
+
+      <a routerLink="/admin">
+        Dashboard
+      </a>
+
+      <a routerLink="/admin/usuarios">
+        Usuarios
+      </a>
+
+      <a routerLink="/admin/preguntas">
+        Preguntas
+      </a>
+
+      <a routerLink="/admin/videojuegos">
+        Videojuegos
+      </a>
+
+      <a routerLink="/admin/historial">
+        Historial
+      </a>
+
+      <a
+        routerLink="/admin/sesiones"
+        class="activo"
+      >
+        Sesiones
+      </a>
+
+    </nav>
+
+    <div class="administrador">
+
+      <strong>
+        {{ usuarioActual?.nombre }}
+      </strong>
+
+      <span>
+        {{ usuarioActual?.correo }}
+      </span>
+
+    </div>
+
+    <button
+      class="cerrar"
+      type="button"
+      (click)="cerrarSesion()"
+    >
+      Cerrar sesión
+    </button>
+
+  </aside>
+
+  <main class="contenido">
+
+    <header class="encabezado">
+
+      <div>
+
+        <h1>
+          Sesiones
+        </h1>
+
+        <p>
+          Revisa los accesos realizados al sistema.
+        </p>
+
+      </div>
+
+      <button
+        class="actualizar"
+        type="button"
+        (click)="cargarSesiones()"
+        [disabled]="cargando"
+      >
+        Actualizar
+      </button>
+
+    </header>
+
+    <div
+      *ngIf="mensajeExito"
+      class="mensaje exito"
+    >
+      {{ mensajeExito }}
+    </div>
+
+    <div
+      *ngIf="mensajeError"
+      class="mensaje error"
+    >
+      {{ mensajeError }}
+    </div>
+
+    <section class="barra-busqueda">
+
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="filtrarSesiones()"
+        placeholder="Buscar por usuario, correo, IP o dispositivo"
+      >
+
+      <span>
+        {{ sesionesFiltradas.length }}
+        sesiones
+      </span>
+
+    </section>
+
+    <div
+      *ngIf="cargando"
+      class="estado-carga"
+    >
+      Cargando sesiones...
+    </div>
+
+    <section
+      *ngIf="!cargando"
+      class="tabla-contenedor"
+    >
+
+      <div class="tabla-responsive">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Usuario</th>
+              <th>Fecha de ingreso</th>
+              <th>Dirección IP</th>
+              <th>Dispositivo</th>
+              <th>Acciones</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let sesion of sesionesFiltradas"
+            >
+
+              <td>
+
+                <div class="usuario">
+
+                  <div class="avatar">
+                    👤
+                  </div>
+
+                  <div>
+
+                    <strong>
+                      {{ sesion.nombre }}
+                    </strong>
+
+                    <small>
+                      {{ sesion.correo }}
+                    </small>
+
+                  </div>
+
+                </div>
+
+              </td>
+
+              <td>
+
+                <span class="fecha">
+                  {{ formatearFecha(sesion.fecha_ingreso) }}
+                </span>
+
+              </td>
+
+              <td>
+
+                <span class="ip">
+                  {{ sesion.direccion_ip }}
+                </span>
+
+              </td>
+
+              <td>
+
+                <p class="dispositivo-corto">
+                  {{ sesion.dispositivo }}
+                </p>
+
+              </td>
+
+              <td>
+
+                <div class="acciones">
+
+                  <button
+                    class="ver"
+                    type="button"
+                    (click)="verDetalle(sesion)"
+                  >
+                    👁 Ver
+                  </button>
+
+                  <button
+                    class="eliminar"
+                    type="button"
+                    (click)="eliminar(sesion)"
+                  >
+                    🗑 Eliminar
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr
+              *ngIf="sesionesFiltradas.length === 0"
+            >
+
+              <td
+                colspan="5"
+                class="sin-datos"
+              >
+                No se encontraron sesiones.
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<div
+  *ngIf="sesionSeleccionada"
+  class="modal-fondo"
+  (click)="cerrarDetalle()"
+>
+
+  <section
+    class="modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-encabezado">
+
+      <div>
+
+        <h2>
+          Detalle de la sesión
+        </h2>
+
+        <p>
+          Información completa del acceso.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="cerrar-modal"
+        (click)="cerrarDetalle()"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div class="modal-contenido">
+
+      <div class="detalle">
+
+        <span>
+          Usuario
+        </span>
+
+        <strong>
+          {{ sesionSeleccionada.nombre }}
+        </strong>
+
+      </div>
+
+      <div class="detalle">
+
+        <span>
+          Correo
+        </span>
+
+        <p>
+          {{ sesionSeleccionada.correo }}
+        </p>
+
+      </div>
+
+      <div class="detalle">
+
+        <span>
+          Fecha de ingreso
+        </span>
+
+        <p>
+          {{
+            formatearFecha(
+              sesionSeleccionada.fecha_ingreso
+            )
+          }}
+        </p>
+
+      </div>
+
+      <div class="detalle">
+
+        <span>
+          Dirección IP
+        </span>
+
+        <p>
+          {{ sesionSeleccionada.direccion_ip }}
+        </p>
+
+      </div>
+
+      <div class="detalle">
+
+        <span>
+          Dispositivo
+        </span>
+
+        <pre>{{ sesionSeleccionada.dispositivo }}</pre>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

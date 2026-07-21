@@ -1,0 +1,420 @@
+<div class="panel">
+
+  <aside class="menu">
+
+    <div class="marca">
+
+      <div class="logo">
+        🎮
+      </div>
+
+      <div>
+        <h2>GameBot</h2>
+        <p>Administración</p>
+      </div>
+
+    </div>
+
+    <nav>
+
+      <a routerLink="/admin">
+        Dashboard
+      </a>
+
+      <a routerLink="/admin/usuarios">
+        Usuarios
+      </a>
+
+      <a
+        routerLink="/admin/preguntas"
+        class="activo"
+      >
+        Preguntas
+      </a>
+
+      <a routerLink="/admin/videojuegos">
+        Videojuegos
+      </a>
+
+      <a routerLink="/admin/historial">
+  Historial
+</a>
+
+      <a routerLink="/admin/sesiones">
+  Sesiones
+</a>
+
+    </nav>
+
+    <div class="administrador">
+
+      <strong>
+        {{ usuarioActual?.nombre }}
+      </strong>
+
+      <span>
+        {{ usuarioActual?.correo }}
+      </span>
+
+    </div>
+
+    <button
+      class="cerrar"
+      type="button"
+      (click)="cerrarSesion()"
+    >
+      Cerrar sesión
+    </button>
+
+  </aside>
+
+  <main class="contenido">
+
+    <header class="encabezado">
+
+      <div>
+
+        <h1>
+          Preguntas y respuestas
+        </h1>
+
+        <p>
+          Administra las respuestas utilizadas por GameBot.
+        </p>
+
+      </div>
+
+      <div class="acciones-encabezado">
+
+        <button
+          class="actualizar"
+          type="button"
+          (click)="cargarPreguntas()"
+          [disabled]="cargando"
+        >
+          Actualizar
+        </button>
+
+        <button
+          class="nuevo"
+          type="button"
+          (click)="abrirFormularioNuevo()"
+        >
+          Agregar pregunta
+        </button>
+
+      </div>
+
+    </header>
+
+    <div
+      *ngIf="mensajeExito"
+      class="mensaje exito"
+    >
+      {{ mensajeExito }}
+    </div>
+
+    <div
+      *ngIf="mensajeError"
+      class="mensaje error"
+    >
+      {{ mensajeError }}
+    </div>
+
+    <section
+      *ngIf="mostrarFormulario"
+      class="formulario-contenedor"
+    >
+
+      <div class="titulo-formulario">
+
+        <div>
+
+          <h2>
+            {{
+              modoEdicion
+                ? 'Editar pregunta'
+                : 'Agregar pregunta'
+            }}
+          </h2>
+
+          <p>
+            La pregunta y la respuesta son obligatorias.
+          </p>
+
+        </div>
+
+        <button
+          class="cerrar-formulario"
+          type="button"
+          (click)="cancelarFormulario()"
+        >
+          ✕
+        </button>
+
+      </div>
+
+      <form
+        class="formulario"
+        (ngSubmit)="guardar()"
+      >
+
+        <div class="campo campo-ancho">
+
+          <label for="pregunta">
+            Pregunta *
+          </label>
+
+          <input
+            id="pregunta"
+            type="text"
+            name="pregunta"
+            [(ngModel)]="formulario.pregunta"
+            placeholder="Ejemplo: ¿Qué es Minecraft?"
+          >
+
+        </div>
+
+        <div class="campo campo-ancho">
+
+          <label for="respuesta">
+            Respuesta *
+          </label>
+
+          <textarea
+            id="respuesta"
+            name="respuesta"
+            [(ngModel)]="formulario.respuesta"
+            rows="6"
+            placeholder="Escribe la respuesta que dará el chatbot"
+          ></textarea>
+
+        </div>
+
+        <div class="campo">
+
+          <label for="palabras_clave">
+            Palabras clave
+          </label>
+
+          <input
+            id="palabras_clave"
+            type="text"
+            name="palabras_clave"
+            [(ngModel)]="formulario.palabras_clave"
+            placeholder="minecraft,bloques,construcción"
+          >
+
+          <small>
+            Separa las palabras con comas.
+          </small>
+
+        </div>
+
+        <div class="campo">
+
+          <label for="estado">
+            Estado
+          </label>
+
+          <select
+            id="estado"
+            name="estado"
+            [(ngModel)]="formulario.estado"
+          >
+            <option [ngValue]="1">
+              Activa
+            </option>
+
+            <option [ngValue]="0">
+              Inactiva
+            </option>
+          </select>
+
+        </div>
+
+        <div class="botones-formulario">
+
+          <button
+            type="button"
+            class="cancelar"
+            (click)="cancelarFormulario()"
+            [disabled]="guardando"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            class="guardar"
+            [disabled]="guardando"
+          >
+            {{
+              guardando
+                ? 'Guardando...'
+                : modoEdicion
+                  ? 'Guardar cambios'
+                  : 'Agregar pregunta'
+            }}
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+    <section class="barra-busqueda">
+
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="filtrarPreguntas()"
+        placeholder="Buscar por pregunta, respuesta o palabras clave"
+      >
+
+      <span>
+        {{ preguntasFiltradas.length }}
+        preguntas
+      </span>
+
+    </section>
+
+    <div
+      *ngIf="cargando"
+      class="estado-carga"
+    >
+      Cargando preguntas...
+    </div>
+
+    <section
+      *ngIf="!cargando"
+      class="tabla-contenedor"
+    >
+
+      <div class="tabla-responsive">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Pregunta</th>
+              <th>Respuesta</th>
+              <th>Palabras clave</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let pregunta of preguntasFiltradas"
+            >
+
+              <td>
+
+                <div class="pregunta-principal">
+
+                  <div class="icono-pregunta">
+                    ¿?
+                  </div>
+
+                  <strong>
+                    {{ pregunta.pregunta }}
+                  </strong>
+
+                </div>
+
+              </td>
+
+              <td>
+
+                <p class="texto-respuesta">
+                  {{ pregunta.respuesta }}
+                </p>
+
+              </td>
+
+              <td>
+
+                <span
+                  *ngIf="pregunta.palabras_clave"
+                  class="palabras"
+                >
+                  {{ pregunta.palabras_clave }}
+                </span>
+
+                <span
+                  *ngIf="!pregunta.palabras_clave"
+                  class="sin-palabras"
+                >
+                  Sin palabras clave
+                </span>
+
+              </td>
+
+              <td>
+
+                <span
+                  class="estado"
+                  [class.activa]="pregunta.estado === 1"
+                  [class.inactiva]="pregunta.estado === 0"
+                >
+                  {{ obtenerTextoEstado(pregunta.estado) }}
+                </span>
+
+              </td>
+
+              <td>
+
+                <div class="acciones-tabla">
+
+                  <button
+                    class="editar"
+                    type="button"
+                    (click)="editar(pregunta)"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    class="eliminar"
+                    type="button"
+                    (click)="eliminar(pregunta)"
+                  >
+                    Eliminar
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr
+              *ngIf="preguntasFiltradas.length === 0"
+            >
+
+              <td
+                colspan="5"
+                class="sin-datos"
+              >
+                No se encontraron preguntas.
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

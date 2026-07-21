@@ -1,0 +1,312 @@
+<div class="panel">
+
+  <aside class="menu">
+
+    <div class="marca">
+
+      <div class="logo">
+        🎮
+      </div>
+
+      <div>
+        <h2>GameBot</h2>
+        <p>Administración</p>
+      </div>
+
+    </div>
+
+    <nav>
+
+      <a routerLink="/admin">
+        Dashboard
+      </a>
+
+      <a routerLink="/admin/usuarios">
+        Usuarios
+      </a>
+
+      <a routerLink="/admin/preguntas">
+        Preguntas
+      </a>
+
+      <a routerLink="/admin/videojuegos">
+        Videojuegos
+      </a>
+
+      <a
+        routerLink="/admin/historial"
+        class="activo"
+      >
+        Historial
+      </a>
+
+      <a routerLink="/admin/sesiones">
+  Sesiones
+</a>
+    </nav>
+
+    <div class="administrador">
+
+      <strong>
+        {{ usuarioActual?.nombre }}
+      </strong>
+
+      <span>
+        {{ usuarioActual?.correo }}
+      </span>
+
+    </div>
+
+    <button
+      class="cerrar"
+      type="button"
+      (click)="cerrarSesion()"
+    >
+      Cerrar sesión
+    </button>
+
+  </aside>
+
+  <main class="contenido">
+
+    <header class="encabezado">
+
+      <div>
+
+        <h1>
+          Historial
+        </h1>
+
+        <p>
+          Revisa las consultas realizadas al chatbot.
+        </p>
+
+      </div>
+
+      <button
+        class="actualizar"
+        type="button"
+        (click)="cargarHistorial()"
+        [disabled]="cargando"
+      >
+        Actualizar
+      </button>
+
+    </header>
+
+    <div
+      *ngIf="mensajeExito"
+      class="mensaje exito"
+    >
+      {{ mensajeExito }}
+    </div>
+
+    <div
+      *ngIf="mensajeError"
+      class="mensaje error"
+    >
+      {{ mensajeError }}
+    </div>
+
+    <section class="barra-busqueda">
+
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="filtrarHistorial()"
+        placeholder="Buscar por pregunta o respuesta"
+      >
+
+      <span>
+        {{ historialFiltrado.length }}
+        registros
+      </span>
+
+    </section>
+
+    <div
+      *ngIf="cargando"
+      class="estado-carga"
+    >
+      Cargando historial...
+    </div>
+
+    <section
+      *ngIf="!cargando"
+      class="tabla-contenedor"
+    >
+
+      <div class="tabla-responsive">
+
+        <table>
+
+          <thead>
+
+            <tr>
+              <th>Pregunta</th>
+              <th>Respuesta</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let registro of historialFiltrado"
+            >
+
+              <td>
+
+                <div class="pregunta">
+
+                  <div class="icono">
+                    💬
+                  </div>
+
+                  <strong>
+                    {{ registro.pregunta }}
+                  </strong>
+
+                </div>
+
+              </td>
+
+              <td>
+
+                <p class="respuesta-corta">
+                  {{
+                    registro.respuesta ||
+                    'Sin respuesta'
+                  }}
+                </p>
+
+              </td>
+
+              <td>
+
+                <span class="fecha">
+                  {{ formatearFecha(registro.fecha) }}
+                </span>
+
+              </td>
+
+              <td>
+
+                <div class="acciones">
+
+                  <button
+                    class="ver"
+                    type="button"
+                    (click)="verRespuesta(registro)"
+                  >
+                    Ver
+                  </button>
+
+                  <button
+                    class="eliminar"
+                    type="button"
+                    (click)="eliminar(registro)"
+                  >
+                    liminar
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+            <tr
+              *ngIf="historialFiltrado.length === 0"
+            >
+
+              <td
+                colspan="4"
+                class="sin-datos"
+              >
+                No hay registros en el historial.
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<div
+  *ngIf="respuestaSeleccionada"
+  class="modal-fondo"
+  (click)="cerrarRespuesta()"
+>
+
+  <section
+    class="modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-encabezado">
+
+      <div>
+
+        <h2>
+          Detalle de la consulta
+        </h2>
+
+        <p>
+          {{ formatearFecha(respuestaSeleccionada.fecha) }}
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="cerrar-modal"
+        (click)="cerrarRespuesta()"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <div class="modal-contenido">
+
+      <div class="detalle">
+
+        <span>
+          Pregunta
+        </span>
+
+        <strong>
+          {{ respuestaSeleccionada.pregunta }}
+        </strong>
+
+      </div>
+
+      <div class="detalle">
+
+        <span>
+          Respuesta
+        </span>
+
+        <pre>{{
+          respuestaSeleccionada.respuesta ||
+          'Sin respuesta'
+        }}</pre>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

@@ -1,0 +1,68 @@
+<div class="auth-page">
+
+  <div class="auth-card">
+
+    <div class="logo">
+      🎮
+    </div>
+
+    <h1>GameBot</h1>
+
+    <p class="subtitulo">
+      Inicia sesión para entrar al chatbot
+    </p>
+
+    <form (ngSubmit)="iniciarSesion()">
+
+      <div class="campo">
+        <label for="correo">Correo electrónico</label>
+
+        <input
+          id="correo"
+          name="correo"
+          type="email"
+          [(ngModel)]="correo"
+          placeholder="ejemplo@correo.com"
+          autocomplete="email"
+          required
+        >
+      </div>
+
+      <div class="campo">
+        <label for="password">Contraseña</label>
+
+        <input
+          id="password"
+          name="password"
+          type="password"
+          [(ngModel)]="password"
+          placeholder="Ingresa tu contraseña"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <div
+        *ngIf="mensajeError"
+        class="mensaje-error"
+      >
+        {{ mensajeError }}
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="cargando"
+      >
+        {{ cargando ? 'Ingresando...' : 'Iniciar sesión' }}
+      </button>
+
+    </form>
+
+    <p class="enlace-registro">
+      ¿No tienes una cuenta?
+      <a routerLink="/registro">Regístrate aquí</a>
+    </p>
+
+  </div>
+
+</div>

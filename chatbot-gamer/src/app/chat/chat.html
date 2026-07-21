@@ -1,0 +1,61 @@
+<div class="chat-container">
+
+  <div class="chat-header">
+    🎮 GameBot
+    <span>ChatBot Gamer</span>
+  </div>
+
+  <div class="chat-body">
+
+    <div
+      *ngFor="let item of mensajes()"
+      class="mensaje"
+      [ngClass]="item.tipo"
+    >
+
+      <div class="burbuja">
+        <span class="texto">{{ item.texto }}</span>
+      </div>
+
+    </div>
+
+    <div
+      *ngIf="enviando()"
+      class="mensaje bot"
+    >
+      <div class="burbuja escribiendo">
+        GameBot está escribiendo...
+      </div>
+    </div>
+
+  </div>
+
+  <div class="chat-input">
+
+    <input
+      type="text"
+      [(ngModel)]="mensaje"
+      placeholder="Pregúntame sobre un videojuego..."
+      (keyup.enter)="enviar()"
+      [disabled]="enviando()"
+    >
+
+    <button
+      type="button"
+      (click)="enviar()"
+      [disabled]="enviando()"
+    >
+      Enviar
+    </button>
+
+    <button
+  type="button"
+  class="boton-cerrar-sesion"
+  (click)="cerrarSesion()"
+>
+ Cerrar sesión
+</button>
+
+  </div>
+
+</div>
