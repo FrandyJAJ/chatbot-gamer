@@ -8,7 +8,7 @@ import { Videojuego } from '../models/videojuego';
 })
 export class ChatService {
 
-  private url = 'http://localhost:3000/chat';
+  private url = 'https://chatbot-gamer-backend.onrender.com/chat';
 
   constructor(private http: HttpClient) {}
 

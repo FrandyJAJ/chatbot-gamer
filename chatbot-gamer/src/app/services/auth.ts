@@ -20,7 +20,7 @@ export interface RespuestaLogin {
 })
 export class AuthService {
 
-  private url = 'http://localhost:3000/auth';
+  private url = 'https://chatbot-gamer-backend.onrender.com/chat';
 
   constructor(private http: HttpClient) {}
 
